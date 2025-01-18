@@ -86,16 +86,19 @@ public static class Day02
 
                 //add it left
                 if (!success){
-                    success = true;
                     
                     if (i==0){ //drop leftmost diff
                         j = 1;
                         inc = diffs[1] > 0;
-                        while (success && j<diffs.Length){
+                        do {
                             success = checkConditions(diffs[j++], inc);
-                        }
+                        } while (success && j<diffs.Length);
                     } else {
                         j = 0;
+                        if (i == 1){
+                            inc = diffs[0]+diffs[1] > 0;
+                        }
+
                         while (success && j<diffs.Length){
                             if (j == i){
                                 success = checkConditions(diffs[j]+diffs[j+1], inc);
