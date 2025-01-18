@@ -26,7 +26,7 @@ public static class Day02
                 var helper = new Helper();
                 bool result = helper.IsSafe(parts);
 
-                Console.WriteLine($"Line: {line} -> Safe: {result}");
+                //Console.WriteLine($"Line: {line} -> Safe: {result}");
 
                 if (result)
                 {
@@ -66,50 +66,47 @@ public static class Day02
             else {
                 i--;
                 success = true;
-                //try dropping the left number
-                if(i==0){
-                    inc = diffs[1] > 0;
-                    
-                    for (int j = 1; j<diffs.Length; j++){
-                        success = checkConditions(diffs[j],inc);
-                        if (!success)
-                        {
-                            break;
-                        }
-                    }
+                //add it right
+                int j = 0;
 
-                } else {
-                    
-                    for (int j = 0; j<diffs.Length; j++){
-                        if (j == i-1){
-                            success = checkConditions(diffs[j]+diffs[j+1],inc);
-                            j++;
-                        } else {
-                            success = checkConditions(diffs[j],inc);
-                        }
-                        if (!success)
-                        {
-                            break;
-                        }
-                    }
-
+                if (i == 0){
+                    inc = diffs[0]+diffs[1] > 0;
                 }
 
-                if (!success) {
-                        for (int j = 0; j<diffs.Length; j++){
+                while (success && j<diffs.Length){
+
+                    if (j == i-1){
+                        success = checkConditions(diffs[j]+diffs[j+1], inc);
+                        j++;
+                    } else {
+                        success = checkConditions(diffs[j], inc);
+                    }
+                    j++;
+                }
+
+                //add it left
+                if (!success){
+                    success = true;
+                    
+                    if (i==0){ //drop leftmost diff
+                        j = 1;
+                        inc = diffs[1] > 0;
+                        while (success && j<diffs.Length){
+                            success = checkConditions(diffs[j++], inc);
+                        }
+                    } else {
+                        j = 0;
+                        while (success && j<diffs.Length){
                             if (j == i){
-                                success = checkConditions(diffs[j]+diffs[j+1],inc);
+                                success = checkConditions(diffs[j]+diffs[j+1], inc);
                                 j++;
                             } else {
-                                success = checkConditions(diffs[j],inc);
+                                success = checkConditions(diffs[j], inc);
                             }
-                            if (!success)
-                            {
-                                break;
-                            }
+                            j++;
                         }
                     }
-
+                }
 
             }
 
