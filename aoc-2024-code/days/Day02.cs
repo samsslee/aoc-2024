@@ -24,7 +24,7 @@ public static class Day02
                 // Split line into two columns and parse as integers
                 List<int> parts = Array.ConvertAll(line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries), int.Parse).ToList();
 
-                // bool result = Part1.IsSafe(parts);
+                //bool result = Part1.IsSafe(parts);
 
                 // Console.WriteLine($"Line: {line} -> Safe: {result}");
                 bool result2 = Part2.IsSafeWithException(parts);
@@ -134,102 +134,5 @@ public static class Day02
             return true;
         }
     }
-
-    // private class Helper
-    // {
-    //     public bool IsSafe(int[] parts)
-    //     {
-
-    //         int [] diffs = makeDiffs(parts);
-    //         bool inc = parts[1]-parts[0] > 0;
-    //         bool success = true;
-    //         int i = 0;
-
-    //         while (success && i<diffs.Length){
-    //             success = checkConditions(diffs[i++], inc);
-    //         }
-
-    //         if (success || i==diffs.Length)
-    //         {
-    //             return true;
-    //         } 
-    //         else {
-    //             i--;
-    //             success = true;
-    //             //add it right
-    //             int j = 0;
-
-    //             if (i == 0){
-    //                 inc = diffs[0]+diffs[1] > 0;
-    //             }
-
-    //             while (success && j<diffs.Length){
-
-    //                 if (j == i-1){
-    //                     success = checkConditions(diffs[j]+diffs[j+1], inc);
-    //                     j++;
-    //                 } else {
-    //                     success = checkConditions(diffs[j], inc);
-    //                 }
-    //                 j++;
-    //             }
-
-    //             //add it left
-    //             if (!success){
-                    
-    //                 if (i==0){ //drop leftmost diff
-    //                     j = 1;
-    //                     inc = diffs[1] > 0;
-    //                     do {
-    //                         success = checkConditions(diffs[j++], inc);
-    //                     } while (success && j<diffs.Length);
-    //                 } else {
-    //                     j = 0;
-    //                     if (i == 1){
-    //                         inc = diffs[0]+diffs[1] > 0;
-    //                     }
-
-    //                     while (success && j<diffs.Length){
-    //                         if (j == i){
-    //                             success = checkConditions(diffs[j]+diffs[j+1], inc);
-    //                             j++;
-    //                         } else {
-    //                             success = checkConditions(diffs[j], inc);
-    //                         }
-    //                         j++;
-    //                     }
-    //                 }
-    //             }
-
-    //         }
-
-    //         return success;
-
-    //     }
-
-    //     private int [] makeDiffs(int[] parts)
-    //     {
-    //         int [] diffs = new int[parts.Length-1];
-
-    //         for (int i = 0; i< parts.Length-1; i++)
-    //         {
-    //             diffs[i] = parts[i+1] - parts[i];
-    //         }
-
-    //         return diffs;
-    //     }
-
-    //     private bool checkConditions( int diff, bool inc)
-    //     {
-    //         if (diff == 0 || Math.Abs(diff) >3 || diff > 0 != inc)
-    //         {
-    //             return false;
-    //         }
-
-    //         return true;
-    //     }
-
-    // }
-
     
 }
