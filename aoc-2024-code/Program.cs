@@ -5,6 +5,6 @@ class Program
     static void Main(string[] args)
     {
         // Call the specific day's solution directly
-        Day02.Run();
+        Day03.Run();
     }
 }
