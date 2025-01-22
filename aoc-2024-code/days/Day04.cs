@@ -4,7 +4,7 @@ public static class Day04
 {
     public static void Run()
     {
-        Console.WriteLine("Running Day 03 solution...");
+        Console.WriteLine("Running Day 04 solution...");
         string inputPath = @"inputs/day04.txt";
         string[] wordSearch = File.ReadAllLines(inputPath);
         // int xmasCount = Part1.searchXmas(wordSearch);
