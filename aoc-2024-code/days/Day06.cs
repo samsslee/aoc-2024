@@ -78,9 +78,8 @@ public static class Day06
             while(InBounds(i,j)){
                 int loc = (i * width) + j;
                 visited.Add(loc);
-                if (visited.Count % 10 == 8){
+                if (visited.Count % 10 == 8 && visited.Contains(loc)){
                     //Console.WriteLine("trying:" +x+","+y);
-
                     if(DetectCycle(visited)){
                         //Console.WriteLine("\n Success at:"+x+","+y+"\n");
                         
