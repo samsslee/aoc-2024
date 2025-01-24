@@ -15,10 +15,10 @@ public static class Day08{
         string[] map = File.ReadAllLines(inputPath);
         height = map.Length;
         width = map[0].Length;
-        Console.WriteLine(Part1(map));
+        Console.WriteLine(Part1and2(map));
     }
 
-    private static int Part1(string[] map)
+    private static int Part1and2(string[] map)
     {
         for (int i=0;i<height;i++){
             for(int j=0; j<width; j++){
@@ -26,7 +26,7 @@ public static class Day08{
                     //check if it's the dictionary
                     if (antennas.ContainsKey(map[i][j])){
                         
-                        //part 2
+                        //part 2 ======
                         //if it's the first time we see a repeat antenna
                         //then add the one that's in the list as well as the new one
                         if (antennas[map[i][j]].Count == 1){
@@ -35,7 +35,7 @@ public static class Day08{
                         //otherwise, we've already added all the antennas in the list
                         //so just add the new antenna to the node list
                         aNodes.Add((i,j));
-                        
+                        //=======
                         
                         makeANodes(i, j, antennas[map[i][j]]);
                         antennas[map[i][j]].Add((i,j));
