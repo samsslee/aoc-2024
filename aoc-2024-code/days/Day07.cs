@@ -20,11 +20,11 @@ public static class Day07
 
         }
         reader.Close();
-        Console.WriteLine(Part1());
+        Console.WriteLine(Part1and2());
 
     }
 
-    private static long Part1(){
+    private static long Part1and2(){
         long total = 0;
 
         for(int i = 0; i<nums.Count;i++)
@@ -33,11 +33,16 @@ public static class Day07
             NumbersProcessor processor = new NumbersProcessor(nums[i], sums[i]);
             if(processor.AddOrMultiply(nums[i][0],1)){
                 total += sums[i];
+            } else if(processor.AddOrMultiplyOrConcat(nums[i][0],1)){ //Part 2
+                total += sums[i];
             }; // Call a method to process the numbers
         }
         return total;
     }
 }
+
+
+
 
 public class NumbersProcessor
 {
@@ -79,4 +84,35 @@ public class NumbersProcessor
         // Return true if either operation yields the target sum
         return addedResult || multipliedResult;
     }
+
+
+    public bool AddOrMultiplyOrConcat(long currentSum, long currentIndex)
+    {
+        // Base condition: If the current sum matches the target, return true
+        if (currentSum == targetSum)
+        {
+            return true;
+        }
+        if (currentSum > targetSum)
+        {
+            return false;
+        }
+        // Base condition: If we've processed all numbers, return false
+        if (currentIndex >= nLength)
+        {
+            return false;
+        }
+
+        // Recursive case: Try adding and multiplying the next number
+        long nextNum = nums[currentIndex];
+        string concatted = currentSum.ToString() + nextNum.ToString();
+        bool addedResult = AddOrMultiplyOrConcat(currentSum + nextNum, currentIndex + 1);
+        bool multipliedResult = AddOrMultiplyOrConcat(currentSum * nextNum, currentIndex + 1);
+        bool concatResult = AddOrMultiplyOrConcat(long.Parse(concatted), currentIndex+1);
+
+        // Return true if either operation yields the target sum
+        return addedResult || multipliedResult || concatResult;
+    }
 }
+
+
