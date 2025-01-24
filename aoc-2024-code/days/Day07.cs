@@ -62,7 +62,7 @@ public class NumbersProcessor
     public bool AddOrMultiply(long currentSum, long currentIndex)
     {
         // Base condition: If the current sum matches the target, return true
-        if (currentSum == targetSum)
+        if (currentSum == targetSum && currentIndex == nLength)
         {
             return true;
         }
@@ -89,7 +89,7 @@ public class NumbersProcessor
     public bool AddOrMultiplyOrConcat(long currentSum, long currentIndex)
     {
         // Base condition: If the current sum matches the target, return true
-        if (currentSum == targetSum)
+        if (currentSum == targetSum && currentIndex == nLength)
         {
             return true;
         }
