@@ -9,7 +9,7 @@ public static class Day09p2
     public static void Run()
     {
         Console.WriteLine("Running Day 09 solution...");
-        string inputPath = @"inputs/day09.txt";
+        string inputPath = @"inputs/day09mod.txt";
         StreamReader reader = new StreamReader(inputPath);
 
         string? input = reader.ReadLine();
@@ -29,8 +29,6 @@ public static class Day09p2
             int boxValue = i % 2 == 0 ? i/2 : 0;
             int spacesLeft = i % 2 == 0 ? 0 : (input[i]-'0');
             fragments.Add(new Fragment(input[i]-'0', grandIndex, boxValue, spacesLeft));
-            // Console.WriteLine(fragments[i].StartingIndex());
-            // Console.WriteLine(fragments.Count);
             grandIndex += input[i]-'0';
 
         }
@@ -45,7 +43,6 @@ public static class Day09p2
 
     private static void ShuffleNumbers(){
         for(int i = fragmentList.Count-1; i>=0; i-=2){
-            // Console.WriteLine(fragmentList[i].TotalSpots());
             //starting at the back of the list, we see if we want to shuffle it
             for(int j = 1; j<i; j+=2){ //this is ok because you can't ever move to a space that was created
                 //if there's enough available space somewhere to the left
@@ -96,6 +93,10 @@ public class Fragment
         return startingIndex;
     }
 
+    public int BoxValue(){
+        return boxValue;
+    }
+
     public void ModifySpace(int used){ //before modifying space in the left one
         availSpace -= used;
         startingIndex += used;
@@ -105,14 +106,13 @@ public class Fragment
         startingIndex = newStartingIndex;
     }
 
-    public int CheckSum(){
-        int totalValue = 0;
+    public long CheckSum(){
+        long totalValue = 0;
         if(boxValue != 0){ //speeds up the proces for the ones that are index 0 or spaces or no-longer-existant spaces
             for (int i = 0; i<totalSpots; i++){
                 totalValue+=boxValue*(startingIndex+i);
             }
         }
-        // Console.WriteLine("Values: {0} {1} {2}",boxValue,startingIndex,totalValue);
         return totalValue;
     }
 
