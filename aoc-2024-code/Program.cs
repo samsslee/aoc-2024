@@ -8,7 +8,7 @@ class Program
         // Call the specific day's solution directly
                 // Start the stopwatch to measure runtime
         Stopwatch stopwatch = Stopwatch.StartNew();
-        Day12.Run();
+        Day13.Run();
         stopwatch.Stop();
         Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
     }
