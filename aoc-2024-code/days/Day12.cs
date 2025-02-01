@@ -14,10 +14,10 @@ public static class Day12{
 
         input = rawInput.Select(line => line.ToList()).ToList();
 
-        Console.WriteLine(Part1());
+        Console.WriteLine(Part1and2());
     }
 
-    public static int Part1(){
+    public static int Part1and2(){
         int totalCost = 0;
         List<List<char>> inputcopy = new List<List<char>>(input);
         
@@ -27,7 +27,9 @@ public static class Day12{
                     //Console.WriteLine("{0}, {1} {2}",inputcopy[i][j],i,j);
                     PlotFinder plot = new PlotFinder(inputcopy, i, j);
                     plot.FindArea(i,j);
-                    totalCost += plot.Cost();
+                    totalCost += plot.CostP2();
+                    //Part 1:
+                    //totalCost += plot.Cost();
                     inputcopy = plot.markedGarden();
                 }
             }
@@ -35,8 +37,6 @@ public static class Day12{
 
         return totalCost;
     }
-
-
 
 }
 
@@ -47,6 +47,7 @@ public class PlotFinder{
     int perimeter = 0;
     List<List<char>> input = new List<List<char>>();
     HashSet<(int, int)> seen = new HashSet<(int, int)>();
+    Dictionary<string, List<int>> perimTypes = new Dictionary<string, List<int>>();
 
     char letter;
     int inputLength;
@@ -64,8 +65,43 @@ public class PlotFinder{
         return perimeter*area;
     }
 
+    public int CostP2(){
+        int perims = 0;
+        foreach(var type in perimTypes){
+            perims += CountRegions(type.Value);
+        }
+        return perims*area;
+    }
+
     public List<List<char>> markedGarden(){
         return input;
+    }
+
+    private void AddPerim(string key, int value){
+        if (!perimTypes.TryGetValue(key, out var list))
+        {
+            list = new List<int> { value };
+            perimTypes[key] = list;
+        }
+        else
+        {
+            list.Add(value);
+        }
+    }
+
+    private int CountRegions(List<int> list){
+        if (list.Count == 0) return 0;
+        list.Sort();
+
+        int count = 1;
+
+        for(int i = 1; i<list.Count; i++){
+            if (list[i] != list[i-1]+1){
+                count++;
+            }
+        }
+        return count;
+
     }
 
     public void FindArea(int i, int j){
@@ -76,38 +112,48 @@ public class PlotFinder{
 
         if (i-1 < 0){
             countPerimeter++;
+            AddPerim(i+"U",j);
         } else {
             if (FindNext(i-1,j) && !seen.Contains((i-1,j))){
                 FindArea(i-1, j);
             } else if (!seen.Contains((i-1,j))){
                 countPerimeter++;
+                AddPerim(i+"U",j);
+
             }
         }
         if (i+1 >= inputLength){
             countPerimeter++;
+            AddPerim(i+"D",j);
+
         } else {
             if (FindNext(i+1,j) && !seen.Contains((i+1,j))){
                 FindArea(i+1, j);
             } else if (!seen.Contains((i+1,j))){
                 countPerimeter++;
+                AddPerim(i+"D",j);
             }
         }
         if (j-1 < 0){
             countPerimeter++;
+            AddPerim(j+"L",i);
         } else {
             if (FindNext(i,j-1) && !seen.Contains((i,j-1))){
                 FindArea(i, j-1);
             } else if (!seen.Contains((i,j-1))){
                 countPerimeter++;
+                AddPerim(j+"L",i);
             }
         }
         if (j+1 >= inputWidth){
             countPerimeter++;
+            AddPerim(j+"R",i);
         } else {
             if (FindNext(i,j+1) && !seen.Contains((i,j+1))){
                 FindArea(i, j+1);
             } else if (!seen.Contains((i,j+1))){
                 countPerimeter++;
+                AddPerim(j+"R",i);
             }
         }
 
