@@ -21,37 +21,53 @@ public static class Day16{
         width = rawInput[0].Length;
         input = rawInput.Select(line => line.ToList()).ToList();
 
-        List<Vertex>minPaths = Part1();
+        HashSet<Vertex>minPaths = Part1();
+        //Console.WriteLine(minPaths.Count);
         Console.WriteLine(Part2(minPaths));
 
     }
 
-    private static int Part2(List<Vertex> minPaths){
+    private static int Part2(HashSet<Vertex> minPaths){
         HashSet<(int, int)> seats = new();
 
-        for(int i = 0; i<minPaths.Count; i++){
-            Console.WriteLine(i);
-            Vertex path = minPaths[i];
-            seats.Add((path.i, path.j));
-            foreach(Vertex node in path.pastSteps){
-                seats.Add((node.i, node.j));
-            }
+        // for(int i = 0; i<minPaths.Count; i++){
+        //     Console.WriteLine(i);
+        //     Vertex path = minPaths[i];
+        //     seats.Add((path.i, path.j));
+        //     foreach(Vertex node in path.pastSteps){
+        //         seats.Add((node.i, node.j));
+        //     }
+        // }
+
+        foreach(Vertex v in minPaths){
+            seats.Add((v.i,v.j));
         }
+
+        foreach ((int, int) seat in seats){
+            input[seat.Item1][seat.Item2] = 'O';
+        }
+
+        foreach (var row in input)
+            {
+                Console.WriteLine(string.Join("", row)); // Joins characters into a string and prints each row
+            }
+        
 
         return seats.Count;
     }
 
-    private static List<Vertex> Part1(){
-        PriorityQueue<Vertex, int> queue = new();
+    private static HashSet<Vertex> Part1(){
+        PriorityQueue<List<Vertex>, int> queue = new();
         Vertex start = new Vertex(height-2, 1, 1);
-        queue.Enqueue(start, 0);
+        queue.Enqueue(new List<Vertex>(){start}, 0);
         visitedCost[start] = 0;
-        List<Vertex> minPaths = new();
+        HashSet<Vertex> minPaths = new();
 
         int allMins = int.MaxValue;
 
         while (queue.Count >0){
-            Vertex current = queue.Dequeue();
+            List<Vertex> currentPath = queue.Dequeue();
+            Vertex current = currentPath.Last();
 
             if (input[current.i][current.j] == 'E'){
 
@@ -62,11 +78,14 @@ public static class Day16{
                 // If it's the first end we encounter, store the cost
                 if (allMins == int.MaxValue) {
                     allMins = visitedCost[current];
-                    minPaths.Add(current); // Add the first path with minimum cost
+                    //HashSet<Vertex> temp = new HashSet<Vertex>(currentPath); // Add the first path with minimum cost
+                    minPaths.UnionWith(currentPath);
+
                 } else if (visitedCost[current] == allMins) {
                     // If the cost matches the minimum cost found, add it
                     Console.WriteLine(allMins);
-                    minPaths.Add(current);
+                    //HashSet<Vertex> temp = new HashSet<Vertex>(currentPath); // Add the first path with minimum cost
+                    minPaths.UnionWith(currentPath);
                 }
                 // If the cost exceeds the current minimum, break the loop as we don't need higher-cost paths
                 else if (visitedCost[current] > allMins) {
@@ -77,18 +96,22 @@ public static class Day16{
             List<int> possibleDirs = findPaths(current.i, current.j, current.dir);
             foreach (int newdir in possibleDirs){
                 var (di, dj) = directions[newdir];
-                Vertex next = new Vertex(current.i+di, current.j+dj, newdir){
-                    pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList()
-                };
+                Vertex next = new Vertex(current.i+di, current.j+dj, newdir);
 
-                if (next.i < 0 || next.i >= height || next.j < 0 || next.j >= width) continue;
+                if (next.i <= 0 || next.i >= height-1 || next.j <= 0 || next.j >= width-1) continue;
 
                 int newcost = visitedCost[current] + (newdir == current.dir ? 1 : 1001);
                 
-                if (!visitedCost.ContainsKey(next) || newcost <= visitedCost[next]){
+                if (!visitedCost.ContainsKey(next) || newcost < visitedCost[next]){
+                    //next.pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList();
+                    List<Vertex> copyList = new List<Vertex>(currentPath);
+                    copyList.Add(next);
                     visitedCost[next] = newcost;
-                    queue.Enqueue(next, newcost); // Enqueue with priority (cost)
-                }
+                    queue.Enqueue(copyList, newcost); // Enqueue with priority (cost)
+                } //else if (newcost == visitedCost[next]){
+                //     //next.pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList().Concat(next.pastSteps).ToList();
+                //     queue.Enqueue(next, newcost); // Enqueue with priority (cost)
+                // }
 
             }
 
@@ -122,7 +145,7 @@ public class Vertex : IEquatable<Vertex>
     public int j;
     public int dir;
 
-    public List<Vertex> pastSteps { get; set; } = new();
+    //public List<Vertex> pastSteps { get; set; } = new();
 
     public Vertex(int ini, int inj, int d)
     {
