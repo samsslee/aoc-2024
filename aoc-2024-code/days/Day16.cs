@@ -29,13 +29,15 @@ public static class Day16{
     private static int Part2(List<Vertex> minPaths){
         HashSet<(int, int)> seats = new();
 
-        foreach (Vertex path in minPaths){
-            Vertex n = path;
-            do {
-                seats.Add((n.i, n.j));  // Use `n` instead of `path`
-                n = n.parent;  // Move to the parent
-            } while (n != null);  // Continue as long as there is a valid parent
+        for(int i = 0; i<minPaths.Count; i++){
+            Console.WriteLine(i);
+            Vertex path = minPaths[i];
+            seats.Add((path.i, path.j));
+            foreach(Vertex node in path.pastSteps){
+                seats.Add((node.i, node.j));
+            }
         }
+
         return seats.Count;
     }
 
@@ -63,6 +65,7 @@ public static class Day16{
                     minPaths.Add(current); // Add the first path with minimum cost
                 } else if (visitedCost[current] == allMins) {
                     // If the cost matches the minimum cost found, add it
+                    Console.WriteLine(allMins);
                     minPaths.Add(current);
                 }
                 // If the cost exceeds the current minimum, break the loop as we don't need higher-cost paths
@@ -74,16 +77,16 @@ public static class Day16{
             List<int> possibleDirs = findPaths(current.i, current.j, current.dir);
             foreach (int newdir in possibleDirs){
                 var (di, dj) = directions[newdir];
-                Vertex next = new Vertex(current.i+di, current.j+dj, newdir, current);
+                Vertex next = new Vertex(current.i+di, current.j+dj, newdir){
+                    pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList()
+                };
 
                 if (next.i < 0 || next.i >= height || next.j < 0 || next.j >= width) continue;
 
-                //part 1
                 int newcost = visitedCost[current] + (newdir == current.dir ? 1 : 1001);
                 
-                if (!visitedCost.ContainsKey(next) || newcost < visitedCost[next]){
+                if (!visitedCost.ContainsKey(next) || newcost <= visitedCost[next]){
                     visitedCost[next] = newcost;
-
                     queue.Enqueue(next, newcost); // Enqueue with priority (cost)
                 }
 
@@ -118,14 +121,14 @@ public class Vertex : IEquatable<Vertex>
     public int i;
     public int j;
     public int dir;
-    public Vertex? parent;
 
-    public Vertex(int ini, int inj, int d, Vertex? p=null)
+    public List<Vertex> pastSteps { get; set; } = new();
+
+    public Vertex(int ini, int inj, int d)
     {
         i = ini;
         j = inj;
         dir = d;
-        parent = p;
     }
 
     public bool Equals(Vertex? other)
@@ -133,10 +136,8 @@ public class Vertex : IEquatable<Vertex>
         if (other is null) return false;
         return this.i == other.i && 
             this.j == other.j && 
-            this.dir == other.dir && 
-            EqualityComparer<Vertex?>.Default.Equals(this.parent, other.parent);
+            this.dir == other.dir;
     }
-
     public override bool Equals(object? obj) => obj is Vertex v && Equals(v);
 
     public override int GetHashCode() => HashCode.Combine(i, j, dir);
