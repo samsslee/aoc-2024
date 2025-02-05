@@ -22,36 +22,15 @@ public static class Day16{
         input = rawInput.Select(line => line.ToList()).ToList();
 
         HashSet<Vertex>minPaths = Part1();
-        //Console.WriteLine(minPaths.Count);
         Console.WriteLine(Part2(minPaths));
 
     }
 
     private static int Part2(HashSet<Vertex> minPaths){
         HashSet<(int, int)> seats = new();
-
-        // for(int i = 0; i<minPaths.Count; i++){
-        //     Console.WriteLine(i);
-        //     Vertex path = minPaths[i];
-        //     seats.Add((path.i, path.j));
-        //     foreach(Vertex node in path.pastSteps){
-        //         seats.Add((node.i, node.j));
-        //     }
-        // }
-
         foreach(Vertex v in minPaths){
             seats.Add((v.i,v.j));
         }
-
-        foreach ((int, int) seat in seats){
-            input[seat.Item1][seat.Item2] = 'O';
-        }
-
-        foreach (var row in input)
-            {
-                Console.WriteLine(string.Join("", row)); // Joins characters into a string and prints each row
-            }
-        
 
         return seats.Count;
     }
@@ -64,32 +43,25 @@ public static class Day16{
         HashSet<Vertex> minPaths = new();
 
         int allMins = int.MaxValue;
+        List<Vertex> currentPath;
+        int currentCost;
 
-        while (queue.Count >0){
-            List<Vertex> currentPath = queue.Dequeue();
+        while (queue.TryDequeue(out currentPath, out currentCost)){
             Vertex current = currentPath.Last();
 
             if (input[current.i][current.j] == 'E'){
 
-                // Console.WriteLine(current.i);
-                // Console.WriteLine(current.j);
-                // Console.WriteLine(visitedCost[current]);
-
                 // If it's the first end we encounter, store the cost
                 if (allMins == int.MaxValue) {
                     allMins = visitedCost[current];
-                    //HashSet<Vertex> temp = new HashSet<Vertex>(currentPath); // Add the first path with minimum cost
                     minPaths.UnionWith(currentPath);
 
                 } else if (visitedCost[current] == allMins) {
                     // If the cost matches the minimum cost found, add it
-                    Console.WriteLine(allMins);
-                    //HashSet<Vertex> temp = new HashSet<Vertex>(currentPath); // Add the first path with minimum cost
                     minPaths.UnionWith(currentPath);
                 }
                 // If the cost exceeds the current minimum, break the loop as we don't need higher-cost paths
                 else if (visitedCost[current] > allMins) {
-                    Console.WriteLine("hey");
                     break;
                 }
             }
@@ -100,18 +72,15 @@ public static class Day16{
 
                 if (next.i <= 0 || next.i >= height-1 || next.j <= 0 || next.j >= width-1) continue;
 
-                int newcost = visitedCost[current] + (newdir == current.dir ? 1 : 1001);
+                int newcost = currentCost + (newdir == current.dir ? 1 : 1001);
                 
-                if (!visitedCost.ContainsKey(next) || newcost < visitedCost[next]){
-                    //next.pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList();
+                if (!visitedCost.ContainsKey(next) || newcost <= visitedCost[next]){
                     List<Vertex> copyList = new List<Vertex>(currentPath);
                     copyList.Add(next);
+
                     visitedCost[next] = newcost;
                     queue.Enqueue(copyList, newcost); // Enqueue with priority (cost)
-                } //else if (newcost == visitedCost[next]){
-                //     //next.pastSteps = new List<Vertex> { current }.Concat(current.pastSteps).ToList().Concat(next.pastSteps).ToList();
-                //     queue.Enqueue(next, newcost); // Enqueue with priority (cost)
-                // }
+                } 
 
             }
 
