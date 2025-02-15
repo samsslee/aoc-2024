@@ -26,30 +26,12 @@ public static class Day22{
         }
         reader.Close();
 
-        Part2();
+        Part1and2();
 
     }
 
-    // private static void Part1(){
-    //     long answer = 0;
-
-    //     foreach (long secret in secrets){
-    //         long s = secret;
-    //         int nth = 2000;
-
-    //         while(nth >0){
-    //             s = Evolve(s);
-    //             nth--;
-    //         }
-    //         answer +=s;
-    //     }
-
-    //     Console.WriteLine("answer part 1: "+ answer);
-    // }
-
-
-    private static void Part2(){
-        //long answer = 0;
+    private static void Part1and2(){
+        long answer = 0;
 
         foreach (long secret in secrets){
             long s = secret;
@@ -80,13 +62,13 @@ public static class Day22{
             }
 
 
-            //answer +=s;
+            answer +=s;
         }
 
         long max = firstEncounter.Values.Max();
-
+        
+        Console.WriteLine("answer part 1: "+ answer);
         Console.WriteLine("answer part 2: " + max);
-        //Console.WriteLine("answer part 1: "+ answer);
     }
 
     private static long Evolve(long secret){
