@@ -5,7 +5,7 @@ public static class Day22{
 
     static List<long> secrets = new();
     static Dictionary<int, string> encode = new(){
-        {0,"0"}, {1,"1"}, {2,"3"}, {3,"3"}, {4,"4"}, 
+        {0,"0"}, {1,"1"}, {2,"2"}, {3,"3"}, {4,"4"}, 
         {5,"5"}, {6,"6"}, {7,"7"}, {8,"8"}, {9,"9"},
             {-1,"A"}, {-2,"B"}, {-3,"C"}, {-4,"D"}, 
         {-5,"E"}, {-6,"F"}, {-7,"G"}, {-8,"H"}, {-9,"I"}, 
@@ -18,7 +18,7 @@ public static class Day22{
 
     public static void Run(){
         Console.WriteLine("Running Day 22 solution...");
-        string inputPath = @"inputs/day22s.txt";
+        string inputPath = @"inputs/day22.txt";
         StreamReader reader = new(inputPath);
 
         while(!reader.EndOfStream){
@@ -68,16 +68,9 @@ public static class Day22{
                     List<string> list = last4.ToList().Select(x => encode[x]).ToList();
                     string encoded = string.Join("",list);
 
-                    if (encoded == "A330"){
-                        Console.WriteLine("Secret " + secret + " N " + nth);
-                    }
-
                     if(!seenEncodesThisTime.Contains(encoded)){
                         seenEncodesThisTime.Add(encoded);
                         firstEncounter[encoded] = firstEncounter.GetValueOrDefault(encoded, 0) + (int) newS % 10;
-                        if (encoded == "A330"){
-                            Console.WriteLine(firstEncounter[encoded] + "<=" + encoded + ": " + newS + " price: "+ newS %10 + " Secret " + secret);
-                        }
 
                     }
                 }
@@ -91,14 +84,6 @@ public static class Day22{
         }
 
         long max = firstEncounter.Values.Max();
-        Console.WriteLine(firstEncounter["B1A3"]);
-
-
-        var maxPair = firstEncounter.OrderByDescending(kvp => kvp.Value).First();
-        string maxKey = maxPair.Key;
-        int maxValue = maxPair.Value;
-
-        Console.WriteLine($"Max key: {maxKey}, Max value: {maxValue}");
 
         Console.WriteLine("answer part 2: " + max);
         //Console.WriteLine("answer part 1: "+ answer);
