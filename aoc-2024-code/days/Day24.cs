@@ -50,6 +50,7 @@ public static class Day24
             if (!gates.ContainsKey(x[4])) gates[x[4]] = null;
             input.Add(new Calc(x[0], x[2], x[4], x[1]));
         }
+        reader.Close();
 
         // Console.WriteLine("\n=== Initial Gates State ===");
         // foreach (var kvp in gates)
